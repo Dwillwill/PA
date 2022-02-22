@@ -2,6 +2,8 @@
 #include <cpu/cpu.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <memory/host.h>
+#include <memory/paddr.h>
 #include "sdb.h"
 
 static int is_batch_mode = false;
@@ -32,6 +34,55 @@ static int cmd_c(char *args) {
   return 0;
 }
 
+static int cmd_p(char *args) {
+  bool * success = NULL;
+  word_t answer = expr(args, success);
+  printf("%u\n", answer);
+  return 0;
+}
+
+static int cmd_si(char *args){
+  if(args == NULL){
+    printf("Debug information:\n");
+    cpu_exec(1);
+    return 0;
+  }
+  char *ptr;
+  uint64_t n = strtoul(args, &ptr, 10);
+  printf("Debug information:\n");
+  cpu_exec(n); 
+  return 0;
+}
+
+static int cmd_info(char *args){
+  if(strcmp(args, "r") == 0){
+    isa_reg_display();
+  }
+  // else if(strcmp(args, "w")){
+  //   ...
+  // }
+  return 0;
+}
+
+static int cmd_x(char *args) {
+  if(args == NULL){
+    printf("Please write the essential args!");
+    return 0;
+  }
+  char *ptr, *tmp;
+  uint32_t offset = strtoul(args, &ptr, 10);
+  uint32_t start_address = strtoul(ptr, &tmp, 16);
+  // printf("%u\n", offset);
+  // printf("%#x\n", start_address);
+  uint32_t *start_point = (uint32_t *)guest_to_host(start_address);
+  printf("Scan the memory with the start of 0x%08x:\n", start_address);
+  for(int i = 0; i < offset; i++){
+    printf("0x%08x  0x%08x\n", start_address, *start_point);
+    start_address += 4;
+    start_point++;
+  }
+  return 0;
+}
 
 static int cmd_q(char *args) {
   return -1;
@@ -46,6 +97,10 @@ static struct {
 } cmd_table [] = {
   { "help", "Display informations about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
+  { "si", "Let the execution of the program stop after running N instructions", cmd_si },
+  { "info", "Print the status of the execution of the program", cmd_info },
+  { "x", "Scan the memory", cmd_x },
+  { "p", "Get the value of Expression", cmd_p },
   { "q", "Exit NEMU", cmd_q },
 
   /* TODO: Add more commands */
