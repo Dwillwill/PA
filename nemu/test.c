@@ -8,9 +8,18 @@
 #include <string.h>
 #include <stdlib.h>
 
+
+
+void asd(int a){
+    int b = 0;
+    printf("%d\n", b);
+    b += 2;
+}
 int main(){
-    char * a;
-    int s = strtoul("0x987", &a, 16);
-    printf("%d", s + 0x10);
+    asd(1);
+    asd(1);
+    asd(1);
     return 0;
 }
+
+

@@ -13,12 +13,13 @@ void init_wp_pool();
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
-  static char *line_read = NULL;
+  char *line_read = NULL;
 
-  if (line_read) {
-    free(line_read);
-    line_read = NULL;
-  }
+  // if (line_read) {
+  //   printf("%s\n", line_read);
+  //   free(line_read);
+  //   line_read = NULL;s
+  // }
 
   line_read = readline("(nemu) ");
 
@@ -84,6 +85,26 @@ static int cmd_x(char *args) {
   return 0;
 }
 
+static int cmd_w(char *args) {
+  // int a;
+  // sscanf(args, "%d", &a);
+  // if(a == 1){
+  //   new_wp("234567654");
+  // }
+  // else if(a == 2){
+  //   new_wp("asdfds");
+  // }
+  new_wp(args);
+  return 0;
+}
+
+static int cmd_d(char *args) {
+  int index;
+  sscanf(args, "%d", &index);
+  free_wp(index);
+  return 0;
+}
+
 static int cmd_q(char *args) {
   return -1;
 }
@@ -101,6 +122,8 @@ static struct {
   { "info", "Print the status of the execution of the program", cmd_info },
   { "x", "Scan the memory", cmd_x },
   { "p", "Get the value of Expression", cmd_p },
+  { "w", "Watch point", cmd_w },
+  { "d", "Delete the watch point", cmd_d },
   { "q", "Exit NEMU", cmd_q },
 
   /* TODO: Add more commands */
