@@ -35,10 +35,10 @@ static int cmd_c(char *args) {
 }
 
 static int cmd_p(char *args) {
-  bool * success = NULL;
+  bool success = false;
   word_t answer = expr(args, success);
-  printf("%u\n", answer);
-  return 0;
+  printf("The value of expression is :  %u\n", answer);
+  return answer;
 }
 
 static int cmd_si(char *args){
@@ -69,9 +69,9 @@ static int cmd_x(char *args) {
     printf("Please write the essential args!");
     return 0;
   }
-  char *ptr, *tmp;
+  char *ptr;
   uint32_t offset = strtoul(args, &ptr, 10);
-  uint32_t start_address = strtoul(ptr, &tmp, 16);
+  uint32_t start_address = cmd_p(ptr);
   // printf("%u\n", offset);
   // printf("%#x\n", start_address);
   uint32_t *start_point = (uint32_t *)guest_to_host(start_address);

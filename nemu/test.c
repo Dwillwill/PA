@@ -6,10 +6,11 @@
 #include <time.h>
 #include <assert.h>
 #include <string.h>
+#include <stdlib.h>
 
 int main(){
-    int seed = time(0); //time(0)返回的是系统的时间（从1970.1.1午夜算起），单位：秒
-    srand(seed);//播种
-    printf("%d\n", rand() % 3);//输出0～2
+    char * a;
+    int s = strtoul("0x987", &a, 16);
+    printf("%d", s + 0x10);
     return 0;
 }

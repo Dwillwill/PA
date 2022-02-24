@@ -11,22 +11,29 @@ static char code_buf[65536 + 128] = {}; // a little larger than `buf`
 static char *code_format =
 "#include <stdio.h>\n"
 "int main() { "
-"  unsigned result = %s; "
-"  printf(\"%%u\", result); "
+"  int result = %s; "
+"  printf(\"%%d\", result); "
 "  return 0; "
 "}";
 
-static char op[4] = {'+', '-', '*', '/'};
+static char op[4][2] = {"+", "-", "*", "/"};
 
-int choose(int n){
+unsigned int choose(unsigned int n){
   return rand() % n;
 }
 static void gen_rand_expr() {
-  buf[0] = '\0';
+  char tmp[32];
   switch (choose(3)) {
-    case 0: gen_num(); break;
-    case 1: gen('('); gen_rand_expr(); gen(')'); break;
-    default: gen_rand_expr(); gen_rand_op(); gen_rand_expr(); break;
+    case 0:
+      sprintf(tmp, "%u", choose(100));
+      strcat(buf, tmp);
+      break;
+    case 1: 
+      strcat(buf, "(");
+      gen_rand_expr(); 
+      strcat(buf, ")");
+      break;
+    default: gen_rand_expr(); strcat(buf, op[choose(4)]); gen_rand_expr(); break;
   }
 }
 
@@ -40,7 +47,7 @@ int main(int argc, char *argv[]) {
   int i;
   for (i = 0; i < loop; i ++) {
     gen_rand_expr();
-
+    puts(buf);
     sprintf(code_buf, code_format, buf);
 
     FILE *fp = fopen("/tmp/.code.c", "w");
