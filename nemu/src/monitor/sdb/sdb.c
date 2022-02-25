@@ -14,12 +14,12 @@ void init_wp_pool();
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
   char *line_read = NULL;
-
-  // if (line_read) {
-  //   printf("%s\n", line_read);
-  //   free(line_read);
-  //   line_read = NULL;s
-  // }
+  
+  if (line_read) {
+    printf("%s\n", line_read);
+    free(line_read);
+    line_read = NULL;
+  }
 
   line_read = readline("(nemu) ");
 
@@ -59,9 +59,9 @@ static int cmd_info(char *args){
   if(strcmp(args, "r") == 0){
     isa_reg_display();
   }
-  // else if(strcmp(args, "w")){
-  //   ...
-  // }
+  else if(strcmp(args, "w")){
+    print_all_wp();
+  }
   return 0;
 }
 
@@ -86,14 +86,6 @@ static int cmd_x(char *args) {
 }
 
 static int cmd_w(char *args) {
-  // int a;
-  // sscanf(args, "%d", &a);
-  // if(a == 1){
-  //   new_wp("234567654");
-  // }
-  // else if(a == 2){
-  //   new_wp("asdfds");
-  // }
   new_wp(args);
   return 0;
 }
