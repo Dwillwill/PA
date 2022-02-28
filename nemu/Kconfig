@@ -119,7 +119,11 @@ endmenu
 
 menu "Testing and Debugging"
 
+config WATCHPOINT
+  bool "Enable watching points"
+  default n
 
+  
 config TRACE
   bool "Enable tracer"
   default y
@@ -152,6 +156,7 @@ config DIFFTEST
   help
     Enable differential testing with a reference design.
     Note that this will significantly reduce the performance of NEMU.
+
 
 choice
   prompt "Reference design"
