@@ -73,9 +73,7 @@ static int cmd_x(char *args) {
   char *ptr;
   uint32_t offset = strtoul(args, &ptr, 10);
   uint32_t start_address = cmd_p(ptr);
-  // printf("%u\n", offset);
-  // printf("%#x\n", start_address);
-  uint32_t *start_point = (uint32_t *)guest_to_host(start_address);
+  uint32_t *start_point = (uint32_t *)guest_to_host(start_address); // paddr_read(paddr_t addr, int len) len = 4
   printf("Scan the memory with the start of 0x%08x:\n", start_address);
   for(int i = 0; i < offset; i++){
     printf("0x%08x  0x%08x\n", start_address, *start_point);
