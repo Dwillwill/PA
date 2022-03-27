@@ -11,7 +11,7 @@ const char *regs[] = {
 
 void isa_reg_display() {
   for( int i = 0; i < 32; i++ ){
-    printf("%s\t0x%08x\n", regs[i], gpr(i));
+    printf(ASNI_FMT("%s\t", ASNI_FG_GREEN)  ASNI_FMT("0x%08x\n", ASNI_FG_WHITE), regs[i], gpr(i));
   }
 }
 

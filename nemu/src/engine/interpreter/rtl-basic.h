@@ -160,19 +160,19 @@ static inline def_rtl(jalr, rtlreg_t* dest, const rtlreg_t *src1, const rtlreg_t
   rtl_addi(s, dest, &(s->pc), 4);
   sword_t offset = (sword_t)imm;
   s->dnpc = (*src1 + offset) & ~1;
-  printf("pc = 0x%08x\n", s->pc);
+  printf(ASNI_FMT("pc = 0x%08x\n", ASNI_FG_GREEN), s->pc);
 }
 
 
 static inline def_rtl(jal, rtlreg_t* dest, const rtlreg_t imm) {
   rtl_addi(s, dest, &(s->pc), 4);
-  printf("jal imm:%d\n", imm);
+  // printf("jal imm:%d\n", imm);
   s->dnpc = s->pc + ((sword_t)imm << 1);
-  printf("pc = 0x%08x\n", s->pc);
+  printf(ASNI_FMT("pc = 0x%08x\n", ASNI_FG_GREEN), s->pc);
 }
 
 static inline def_rtl(auipc, rtlreg_t *dest, const rtlreg_t imm) {
   rtl_addi(s, dest, &(s->pc), imm);
-  printf("after_addi:0x%08x\n", *dest);
+  // printf("after_addi:0x%08x\n", *dest);
 }
 #endif

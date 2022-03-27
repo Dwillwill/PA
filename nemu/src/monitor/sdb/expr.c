@@ -86,8 +86,8 @@ static bool make_token(char *e) {
         char *substr_start = e + position;
         int substr_len = pmatch.rm_eo;
 
-        Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
-            i, rules[i].regex, position, substr_len, substr_len, substr_start);
+        // Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
+        //     i, rules[i].regex, position, substr_len, substr_len, substr_start);
 
         position += substr_len;
 
@@ -141,7 +141,7 @@ static bool make_token(char *e) {
         panic("Bad expression because of the parentheses!\n");
       }
     }
-    printf("The expression is legitimate.\n");
+    // printf("The expression is legitimate.\n");
 
     if (i == NR_REGEX) {
       printf("no match at position %d\n%s\n%*.s^\n", position, e, position, "");
@@ -283,7 +283,7 @@ word_t eval(int p ,int q){
     else if(tokens[p].type == TK_REG){
       bool success = false;
       char *reg_name =  tokens[p].str;
-      printf("%s\n", reg_name);
+      // printf("%s\n", reg_name);
       num = isa_reg_str2val(reg_name, success);
       flag = 1;
     }

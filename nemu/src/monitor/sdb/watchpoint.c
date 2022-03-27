@@ -132,7 +132,7 @@ int is_wp_change(){
     temp_value = expr(p->exp, success);
     if(temp_value != *(p->value_of_exp)){
       flag = 1;
-      printf("NO %d: $(%s) = %u -------->  %u\n", p->NO, p->exp, *(p->value_of_exp), temp_value);
+      printf("NO%d: %s = " ASNI_FMT("0x%08x", ASNI_FG_BLACK) " --------> " ASNI_FMT("0x%08x\n", ASNI_FG_WHITE), p->NO, p->exp, *(p->value_of_exp), temp_value);
       memcpy(p->value_of_exp, &temp_value, 4);
     }
     p = p->next;
@@ -143,7 +143,7 @@ int is_wp_change(){
 void print_all_wp(){
   WP *p = head;
   while(p != NULL){
-    printf("NO %d: $(%s) = %u\n", p->NO, p->exp, *(p->value_of_exp));
+    printf("NO %d: %s = %u\n", p->NO, p->exp, *(p->value_of_exp));
     p = p->next;
   }
 }

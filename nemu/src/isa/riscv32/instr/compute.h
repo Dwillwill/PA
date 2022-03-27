@@ -4,7 +4,7 @@ def_EHelper(lui) {
 
 def_EHelper(addi){
   rtl_addi(s, ddest, dsrc1, id_src2->simm);
-  printf("after_addi:0x%08x\n", *ddest);
+  // printf("after_addi:0x%08x\n", *ddest);
 }
 
 def_EHelper(auipc){

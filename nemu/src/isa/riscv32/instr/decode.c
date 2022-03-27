@@ -75,7 +75,7 @@ def_THelper(main) {
 
 int isa_fetch_decode(Decode *s) {
   s->isa.instr.val = instr_fetch(&s->snpc, 4);
-  printf("instr:0x%08x\n", s->isa.instr.val);
+  // printf("instr:0x%08x\n", s->isa.instr.val);
   int idx = table_main(s);
   return idx;
 }

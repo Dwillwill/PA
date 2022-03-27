@@ -44,13 +44,13 @@ static int cmd_p(char *args) {
 
 static int cmd_si(char *args){
   if(args == NULL){
-    printf("Debug information:\n");
+    // printf("Debug information:\n");
     cpu_exec(1);
     return 0;
   }
   char *ptr;
   uint64_t n = strtoul(args, &ptr, 10);
-  printf("Debug information:\n");
+  // printf("Debug information:\n");
   cpu_exec(n); 
   return 0;
 }
@@ -72,11 +72,17 @@ static int cmd_x(char *args) {
   }
   char *ptr;
   uint32_t offset = strtoul(args, &ptr, 10);
-  uint32_t start_address = cmd_p(ptr);
+  uint32_t start_address;
+  if(strcmp(ptr, "") == 0){
+    start_address = 0x80000000;
+  }else{
+    start_address = cmd_p(ptr);
+  }
   uint32_t *start_point = (uint32_t *)guest_to_host(start_address); // paddr_read(paddr_t addr, int len) len = 4
-  printf("Scan the memory with the start of 0x%08x:\n", start_address);
+  printf("Scan the memory with the start of " ASNI_FMT("0x%08x:\n", ASNI_FG_GREEN), start_address);
+  printf(ASNI_FMT("address\t\t", ASNI_FG_YELLOW)  ASNI_FMT("value\n", ASNI_FG_YELLOW));
   for(int i = 0; i < offset; i++){
-    printf("0x%08x  0x%08x\n", start_address, *start_point);
+    printf(ASNI_FMT("0x%08x:\t", ASNI_FG_GREEN) ASNI_FMT("0x%08x\n", ASNI_FG_WHITE), start_address, *start_point);
     start_address += 4;
     start_point++;
   }
@@ -146,7 +152,7 @@ static int cmd_help(char *args) {
 }
 
 void sdb_set_batch_mode() {
-  is_batch_mode = true;
+  is_batch_mode = false;
 }
 
 void sdb_mainloop() {
