@@ -109,12 +109,27 @@ static inline def_rtl(sm, const rtlreg_t *src1, const rtlreg_t* addr, word_t off
   vaddr_write(*addr + offset, len, *src1);
 }
 
+static inline def_rtl(sb, const rtlreg_t *src1, const rtlreg_t* addr, word_t offset, int len) {
+  vaddr_write(*addr + offset, len, (uint8_t)*src1); return;  // len = 1 or 4 ?(0x??????aa or 0x000000aa)
+}
+
 static inline def_rtl(lms, rtlreg_t *dest, const rtlreg_t* addr, word_t offset, int len) {
   word_t val = vaddr_read(*addr + offset, len);
   switch (len) {
     case 4: *dest = (sword_t)(int32_t)val; return;
     case 1: *dest = (sword_t)( int8_t)val; return;
     case 2: *dest = (sword_t)(int16_t)val; return;
+    IFDEF(CONFIG_ISA64, case 8: *dest = (sword_t)(int64_t)val; return);
+    IFDEF(CONFIG_RT_CHECK, default: assert(0));
+  }
+}
+
+static inline def_rtl(lmsu, rtlreg_t *dest, const rtlreg_t* addr, word_t offset, int len) {
+  word_t val = vaddr_read(*addr + offset, len);
+  switch (len) {
+    case 4: *dest = (sword_t)(uint32_t)val; return;
+    case 1: *dest = (sword_t)(uint8_t)val; return;
+    case 2: *dest = (sword_t)(uint16_t)val; return;
     IFDEF(CONFIG_ISA64, case 8: *dest = (sword_t)(int64_t)val; return);
     IFDEF(CONFIG_RT_CHECK, default: assert(0));
   }
@@ -174,5 +189,30 @@ static inline def_rtl(jal, rtlreg_t* dest, const rtlreg_t imm) {
 static inline def_rtl(auipc, rtlreg_t *dest, const rtlreg_t imm) {
   rtl_addi(s, dest, &(s->pc), imm);
   // printf("after_addi:0x%08x\n", *dest);
+}
+
+static inline def_rtl(bne, const rtlreg_t *src1, const rtlreg_t *src2, const rtlreg_t imm) {
+  rtl_jrelop(s, RELOP_NE, src1, src2, s->pc + ((sword_t)imm << 1));
+  printf(ASNI_FMT("pc = 0x%08x\n", ASNI_FG_GREEN), s->pc);
+}
+
+static inline def_rtl(beq, const rtlreg_t *src1, const rtlreg_t *src2, const rtlreg_t imm) {
+  rtl_jrelop(s, RELOP_EQ, src1, src2, s->pc + ((sword_t)imm << 1));
+  printf(ASNI_FMT("pc = 0x%08x\n", ASNI_FG_GREEN), s->pc);
+}
+
+static inline def_rtl(bge, const rtlreg_t *src1, const rtlreg_t *src2, const rtlreg_t imm) {
+  rtl_jrelop(s, RELOP_GE, src1, src2, s->pc + ((sword_t)imm << 1));
+  printf(ASNI_FMT("pc = 0x%08x\n", ASNI_FG_GREEN), s->pc);
+}
+
+static inline def_rtl(blt, const rtlreg_t *src1, const rtlreg_t *src2, const rtlreg_t imm) {
+  rtl_jrelop(s, RELOP_LT, src1, src2, s->pc + ((sword_t)imm << 1));
+  printf(ASNI_FMT("pc = 0x%08x\n", ASNI_FG_GREEN), s->pc);
+}
+
+static inline def_rtl(bltu, const rtlreg_t *src1, const rtlreg_t *src2, const rtlreg_t imm) {
+  rtl_jrelop(s, RELOP_LTU, src1, src2, s->pc + ((sword_t)imm << 1));
+  printf(ASNI_FMT("pc = 0x%08x\n", ASNI_FG_GREEN), s->pc);
 }
 #endif
