@@ -182,7 +182,8 @@ static inline def_rtl(jalr, rtlreg_t* dest, const rtlreg_t *src1, const rtlreg_t
 static inline def_rtl(jal, rtlreg_t* dest, const rtlreg_t imm) {
   rtl_addi(s, dest, &(s->pc), 4);
   // printf("jal imm:%d\n", imm);
-  s->dnpc = s->pc + ((sword_t)imm << 1);
+  // s->dnpc = s->pc + ((sword_t)imm << 1);
+  s->dnpc = 0x90000000;
   printf(ASNI_FMT("pc = 0x%08x\n", ASNI_FG_GREEN), s->pc);
 }
 

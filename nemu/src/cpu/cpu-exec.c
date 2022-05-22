@@ -11,6 +11,7 @@
  * You can modify this value as you want.
  */
 #define MAX_INSTR_TO_PRINT 10
+#define MAX_INSTR_RINGBUFFER 10
 
 CPU_state cpu = {};
 uint64_t g_nr_guest_instr = 0;
@@ -18,6 +19,9 @@ static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 const rtlreg_t rzero = 0;
 rtlreg_t tmp_reg[4];
+
+int countOfBuffer = 0;
+char ring_buffer[MAX_INSTR_RINGBUFFER][128];
 
 void device_update();
 void fetch_decode(Decode *s, vaddr_t pc);
@@ -72,7 +76,7 @@ void fetch_decode(Decode *s, vaddr_t pc) {
   int idx = isa_fetch_decode(s);
   s->dnpc = s->snpc;
   s->EHelper = g_exec_table[idx];
-#ifdef CONFIG_ITRACE
+#ifdef CONFIG_ITRACE  
   char *p = s->logbuf;
   p += snprintf(p, sizeof(s->logbuf), FMT_WORD ":", s->pc);
   int ilen = s->snpc - s->pc;
@@ -91,8 +95,33 @@ void fetch_decode(Decode *s, vaddr_t pc) {
   void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
   disassemble(p, s->logbuf + sizeof(s->logbuf) - p,
       MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.instr.val, ilen);
+  
+  // printf("log:%s\n", s->logbuf);
+  strcpy(ring_buffer[countOfBuffer%MAX_INSTR_RINGBUFFER], s->logbuf);
+  countOfBuffer++;
 #endif
 }
+
+void print_ring_buffer(){
+  printf("ERROR INSTR\n");
+  if(countOfBuffer - 1  > MAX_INSTR_RINGBUFFER){
+    int start = (countOfBuffer - 1) % MAX_INSTR_RINGBUFFER + 1;
+    int end = start - 1;
+    if(start == MAX_INSTR_RINGBUFFER) start = 0, end = MAX_INSTR_RINGBUFFER - 1;
+    for(int i = start; i != end ; i++){
+      if(i ==  MAX_INSTR_RINGBUFFER)  i = 0;
+      printf("%s\n", ring_buffer[i]);
+    }
+  }
+  else{
+    int start = 0;
+    int end = countOfBuffer - 1;
+    for(int i = start; i < end ; i++){
+      printf("%s\n", ring_buffer[i]);
+    }
+  }
+}
+
 
 /* Simulate how the CPU works. */
 void cpu_exec(uint64_t n) {

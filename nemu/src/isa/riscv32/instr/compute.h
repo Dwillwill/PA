@@ -26,6 +26,10 @@ def_EHelper(xori){
   rtl_xori(s, ddest, dsrc1, id_src2->simm);
 }
 
+def_EHelper(ori){
+  rtl_ori(s, ddest, dsrc1, id_src2->simm);
+}
+
 def_EHelper(andi){
   rtl_andi(s, ddest, dsrc1, id_src2->simm);
 }
@@ -64,10 +68,18 @@ def_EHelper(mulh){
 }
 
 def_EHelper(div){
+  rtl_divs_q(s, ddest, dsrc1, dsrc2);
+}
+
+def_EHelper(divu){
   rtl_divu_q(s, ddest, dsrc1, dsrc2);
 }
 
 def_EHelper(rem){
+  rtl_divs_r(s, ddest, dsrc1, dsrc2);
+}
+
+def_EHelper(remu){
   rtl_divu_r(s, ddest, dsrc1, dsrc2);
 }
 
