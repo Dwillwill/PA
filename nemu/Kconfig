@@ -123,6 +123,9 @@ config WATCHPOINT
   bool "Enable watching points"
   default n
 
+config MTRACE
+  bool "Enable memory tracer"
+  default n
   
 config TRACE
   bool "Enable tracer"
