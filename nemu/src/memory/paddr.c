@@ -4,7 +4,7 @@
 #include <isa.h>
 #include "../monitor/sdb/sdb.h"
 
-#if   defined(CONFIG_TARGET_AM)
+#if defined(CONFIG_TARGET_AM)
 static uint8_t *pmem = NULL;
 #else
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
