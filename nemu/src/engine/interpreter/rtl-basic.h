@@ -3,7 +3,15 @@
 
 #include "c_op.h"
 #include <memory/vaddr.h>
+#include <elf.h>
+#include "../../isa/riscv32/local-include/reg.h"
 
+//Get the symtab and strtab after analyse the elf in monitor.c
+#ifdef CONFIG_FTRACE
+extern char *strtab;
+extern Elf32_Sym *elf_symtab;
+extern int count;
+#endif
 /* RTL basic instructions */
 
 #define def_rtl_compute_reg(name) \
@@ -171,20 +179,45 @@ static inline def_rtl(jrelop, uint32_t relop,
   rtl_j(s, (is_jmp ? target : s->snpc));
 }
 
+
 static inline def_rtl(jalr, rtlreg_t* dest, const rtlreg_t *src1, const rtlreg_t imm) {
+  
   rtl_addi(s, dest, &(s->pc), 4);
   sword_t offset = (sword_t)imm;
   s->dnpc = (*src1 + offset) & ~1;
-  printf(ASNI_FMT("pc = 0x%08x\n", ASNI_FG_GREEN), s->pc);
+  
+  #ifdef CONFIG_FTRACE
+  extern word_t zero_null;
+  if(dest == &zero_null && src1 == &cpu.gpr[check_reg_idx(1)]._32){
+    for(int j = 0; j < count; j++){
+      if(elf_symtab[j].st_info == 18 && (cpu.pc >= elf_symtab[j].st_value && cpu.pc <= elf_symtab[j].st_value + elf_symtab[j].st_size - 4)){
+        printf(FMT_PADDR ":ret [%s]\n", cpu.pc, strtab + elf_symtab[j].st_name);
+      }
+    }
+  }else{
+    for(int j = 0; j < count; j++){
+      if(elf_symtab[j].st_info == 18 && s->dnpc == elf_symtab[j].st_value){
+        printf(FMT_PADDR ":call [%s@" FMT_PADDR "]\n", cpu.pc, strtab + elf_symtab[j].st_name, elf_symtab[j].st_value);
+      }
+    }
+  }
+  #endif
 }
 
 
 static inline def_rtl(jal, rtlreg_t* dest, const rtlreg_t imm) {
   rtl_addi(s, dest, &(s->pc), 4);
-  printf("jal imm:%d\n", imm);
+  // printf("jal imm:%d\n", imm);
   s->dnpc = s->pc + ((sword_t)imm << 1);
   // s->dnpc = 0x90000000;
-  printf(ASNI_FMT("pc = 0x%08x\n", ASNI_FG_GREEN), s->pc);
+  #ifdef CONFIG_FTRACE
+  for(int j = 0; j < count; j++){
+    if(s->dnpc == elf_symtab[j].st_value){
+        printf(FMT_PADDR ":call [%s@" FMT_PADDR "]\n", cpu.pc, strtab + elf_symtab[j].st_name, elf_symtab[j].st_value);
+    }
+  }
+  #endif
+
 }
 
 static inline def_rtl(auipc, rtlreg_t *dest, const rtlreg_t imm) {
@@ -194,26 +227,26 @@ static inline def_rtl(auipc, rtlreg_t *dest, const rtlreg_t imm) {
 
 static inline def_rtl(bne, const rtlreg_t *src1, const rtlreg_t *src2, const rtlreg_t imm) {
   rtl_jrelop(s, RELOP_NE, src1, src2, s->pc + ((sword_t)imm << 1));
-  printf(ASNI_FMT("pc = 0x%08x\n", ASNI_FG_GREEN), s->pc);
+  // printf(ASNI_FMT("pc = 0x%08x\n", ASNI_FG_GREEN), s->pc);
 }
 
 static inline def_rtl(beq, const rtlreg_t *src1, const rtlreg_t *src2, const rtlreg_t imm) {
   rtl_jrelop(s, RELOP_EQ, src1, src2, s->pc + ((sword_t)imm << 1));
-  printf(ASNI_FMT("pc = 0x%08x\n", ASNI_FG_GREEN), s->pc);
+  // printf(ASNI_FMT("pc = 0x%08x\n", ASNI_FG_GREEN), s->pc);
 }
 
 static inline def_rtl(bge, const rtlreg_t *src1, const rtlreg_t *src2, const rtlreg_t imm) {
   rtl_jrelop(s, RELOP_GE, src1, src2, s->pc + ((sword_t)imm << 1));
-  printf(ASNI_FMT("pc = 0x%08x\n", ASNI_FG_GREEN), s->pc);
+  // printf(ASNI_FMT("pc = 0x%08x\n", ASNI_FG_GREEN), s->pc);
 }
 
 static inline def_rtl(blt, const rtlreg_t *src1, const rtlreg_t *src2, const rtlreg_t imm) {
   rtl_jrelop(s, RELOP_LT, src1, src2, s->pc + ((sword_t)imm << 1));
-  printf(ASNI_FMT("pc = 0x%08x\n", ASNI_FG_GREEN), s->pc);
+  // printf(ASNI_FMT("pc = 0x%08x\n", ASNI_FG_GREEN), s->pc);
 }
 
 static inline def_rtl(bltu, const rtlreg_t *src1, const rtlreg_t *src2, const rtlreg_t imm) {
   rtl_jrelop(s, RELOP_LTU, src1, src2, s->pc + ((sword_t)imm << 1));
-  printf(ASNI_FMT("pc = 0x%08x\n", ASNI_FG_GREEN), s->pc);
+  // printf(ASNI_FMT("pc = 0x%08x\n", ASNI_FG_GREEN), s->pc);
 }
 #endif

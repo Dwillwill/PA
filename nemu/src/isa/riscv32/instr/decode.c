@@ -16,14 +16,17 @@ static def_DopHelper(i) {
   op->imm = val;
 }
 
+
+
+word_t zero_null = 0;
+
 static def_DopHelper(r) {
   bool is_write = flag;
-  static word_t zero_null = 0;
   op->preg = (is_write && val == 0) ? &zero_null : &gpr(val);
 }
 
 static def_DHelper(I) {
-  decode_op_r(s, id_src1, s->isa.instr.i.rs1, false);
+  decode_op_r(s, id_src1, s->isa.instr.i.rs1, false); 
   decode_op_i(s, id_src2, s->isa.instr.i.simm11_0, false);
   decode_op_r(s, id_dest, s->isa.instr.i.rd, true);
 }

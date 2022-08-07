@@ -128,6 +128,10 @@ config MTRACE
   bool "Enable memory tracer"
   default n
 
+config FTRACE
+  bool "Enable function tracer"
+  default n
+
 config TRACE
   bool "Enable tracer"
   default y

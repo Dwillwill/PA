@@ -41,7 +41,7 @@ void init_mem() {
 
 word_t paddr_read(paddr_t addr, int len) {
   #ifdef CONFIG_MTRACE
-    printf("Memory trace:" FMT_PADDR "\n", addr);
+    printf(ASNI_FMT("Memory trace:" FMT_PADDR, ASNI_FG_RED) "\n", addr);
   #endif
   if (likely(in_pmem(addr))) return pmem_read(addr, len);
   else print_ring_buffer();
@@ -52,7 +52,7 @@ word_t paddr_read(paddr_t addr, int len) {
 
 void paddr_write(paddr_t addr, int len, word_t data) {
   #ifdef CONFIG_MTRACE
-    printf("Memory trace:" FMT_PADDR "\n", addr);
+    printf(ASNI_FMT("Memory trace:" FMT_PADDR, ASNI_FG_RED) "\n", addr);
   #endif
   if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
   else print_ring_buffer();
