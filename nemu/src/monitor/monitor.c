@@ -92,20 +92,20 @@ static void analyse_elf(){
   for(int i = 0; i < elf_head.e_shnum; i++){
     temp = shstrtab;
     temp = temp + shdr[i].sh_name;
-    printf("%s\n", temp);
+    // printf("%s\n", temp);
 
     // strtab
     if(strcmp(temp, ".strtab") == 0){
       strtab = (char*)malloc(sizeof(char) * shdr[i].sh_size);
       fseek(fp, shdr[i].sh_offset, SEEK_SET);
       if(!fread(strtab, shdr[i].sh_size, 1, fp))  panic("Read failed!\n");
-      printf("%s\n", 147 + strtab);
+      // printf("%s\n", 147 + strtab);
     }
 
     // symtab
     if(strcmp(temp, ".symtab") == 0){
       count = shdr[i].sh_size / sizeof(Elf32_Sym);
-      printf("%d\n", count);
+      // printf("%d\n", count);
       elf_symtab = (Elf32_Sym*)malloc(sizeof(Elf32_Sym) * count);
       fseek(fp, shdr[i].sh_offset, SEEK_SET);
       if(!fread(elf_symtab, sizeof(Elf32_Sym) * count, 1, fp))  panic("Read failed!\n");

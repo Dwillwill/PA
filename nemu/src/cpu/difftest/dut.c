@@ -50,7 +50,7 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
   void *handle;
   handle = dlopen(ref_so_file, RTLD_LAZY | MUXNDEF(CONFIG_CC_ASAN, RTLD_DEEPBIND, 0));
   assert(handle);
-
+  //https://man7.org/linux/man-pages/man3/dlsym.3.html
   ref_difftest_memcpy = dlsym(handle, "difftest_memcpy");
   assert(ref_difftest_memcpy);
 

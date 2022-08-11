@@ -20,8 +20,8 @@ static void restart() {
 
 void init_isa() {
   /* Load built-in image. */
-  printf("init address:%#x\n", RESET_VECTOR);
-  printf("'pmem' array address(it will change when restart the NEMU):%#x\n", *guest_to_host(RESET_VECTOR));
+  // printf("init address:%#x\n", RESET_VECTOR);
+  // printf("'pmem' array address(it will change when restart the NEMU):%#x\n", *guest_to_host(RESET_VECTOR));
   memcpy(guest_to_host(RESET_VECTOR), img, sizeof(img));
 
   /* Initialize this virtual computer system. */

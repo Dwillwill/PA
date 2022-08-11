@@ -10,15 +10,13 @@
 
 
 
-void asd(int a){
-    int b = 0;
-    printf("%d\n", b);
-    b += 2;
-}
+// void asd(int a){
+//     int b = 0;
+//     printf("%d\n", b);
+//     b += 2;
+// }
 int main(){
-    asd(1);
-    asd(1);
-    asd(1);
+    printf("hello world.\n");
     return 0;
 }
 
