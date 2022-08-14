@@ -123,6 +123,9 @@ config WATCHPOINT
   bool "Enable watching points"
   default n
 
+config RINGBUFFER
+  bool "Enable print instrs after find bugs"
+  default n
 
 config MTRACE
   bool "Enable memory tracer"
