@@ -118,6 +118,7 @@ static void analyse_elf(){
       // }
     }
   }
+  free(shdr);
 }
 
 static int parse_args(int argc, char *argv[]) {

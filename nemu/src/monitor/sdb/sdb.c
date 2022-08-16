@@ -12,11 +12,10 @@ void init_regex();
 void init_wp_pool();
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
+char *line_read = NULL;
 static char* rl_gets() {
-  char *line_read = NULL;
-  
   if (line_read) {
-    printf("%s\n", line_read);
+    // printf("%s\n", line_read);
     free(line_read);
     line_read = NULL;
   }
