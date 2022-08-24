@@ -249,4 +249,9 @@ static inline def_rtl(bltu, const rtlreg_t *src1, const rtlreg_t *src2, const rt
   rtl_jrelop(s, RELOP_LTU, src1, src2, s->pc + ((sword_t)imm << 1));
   // printf(ASNI_FMT("pc = 0x%08x\n", ASNI_FG_GREEN), s->pc);
 }
+
+static inline def_rtl(bgeu, const rtlreg_t *src1, const rtlreg_t *src2, const rtlreg_t imm) {
+  rtl_jrelop(s, RELOP_GEU, src1, src2, s->pc + ((sword_t)imm << 1));
+  // printf(ASNI_FMT("pc = 0x%08x\n", ASNI_FG_GREEN), s->pc);
+}
 #endif

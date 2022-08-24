@@ -67,6 +67,10 @@ def_EHelper(mulh){
   rtl_muls_hi(s, ddest, dsrc1, dsrc2);
 }
 
+def_EHelper(mulhu){
+  rtl_mulu_hi(s, ddest, dsrc1, dsrc2);
+}
+
 def_EHelper(div){
   rtl_divs_q(s, ddest, dsrc1, dsrc2);
 }
@@ -134,4 +138,8 @@ def_EHelper(blt){
 
 def_EHelper(bltu){
   rtl_bltu(s, dsrc1, dsrc2, id_dest->simm);
+}
+
+def_EHelper(bgeu){
+  rtl_bgeu(s, dsrc1, dsrc2, id_dest->simm);
 }

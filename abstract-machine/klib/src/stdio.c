@@ -6,7 +6,19 @@
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
 int printf(const char *fmt, ...) {
-  panic("Not implemented");
+    char buffer[128];
+    va_list ap;
+    int ret = -1;
+    va_start(ap, fmt);
+    ret = vsprintf(buffer, fmt, ap);
+    va_end(ap);
+    char *out = buffer;
+    while(*out != '\0'){
+        putch(*out);
+        out++;
+    }
+    return ret;
+    // panic("Not implemented");
 }
 
 void itoa(unsigned int n, char * buf){
@@ -33,6 +45,20 @@ int vsprintf(char *str, const char *fmt, va_list ap) {
             switch (*fmt) {
                 case 'd': {
                     n = va_arg(ap, int);
+                    if (n < 0) {
+                        *str = '-';
+                        str++;
+                        n = -n;
+                    }
+                    // printf("case d n=[%d]\n", n);
+                    itoa(n, buf);
+                    // printf("case d buf=[%s]\n", buf);
+                    memcpy(str, buf, strlen(buf));
+                    str += strlen(buf);
+                    break;
+                }
+                 case 'l': {
+                    n = va_arg(ap, unsigned long long int);
                     if (n < 0) {
                         *str = '-';
                         str++;
