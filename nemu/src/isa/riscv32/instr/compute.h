@@ -47,6 +47,10 @@ def_EHelper(srli){
 }
 
 def_EHelper(sltiu){
+  *ddest = interpret_relop(RELOP_LTU, *dsrc1, id_src2->simm) ? 1 : 0;
+}
+
+def_EHelper(slti){
   *ddest = interpret_relop(RELOP_LT, *dsrc1, id_src2->simm) ? 1 : 0;
 }
 
