@@ -57,7 +57,6 @@ void __am_input_keybrd(AM_INPUT_KEYBRD_T *kbd) {
     key_f = (key_f + 1) % KEY_QUEUE_LEN;
   }
   SDL_UnlockMutex(key_queue_lock);
-
   kbd->keydown = (k & KEYDOWN_MASK ? true : false);
   kbd->keycode = k & ~KEYDOWN_MASK;
 }
