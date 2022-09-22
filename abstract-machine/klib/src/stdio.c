@@ -36,7 +36,7 @@ void itoa(unsigned int n, char * buf){
 
 int vsprintf(char *str, const char *fmt, va_list ap) {
     int n;
-    unsigned long int u_long_int;
+    long long int u_long_int;
     char * s;
     char buf[64];
     memset(buf, 0, sizeof (buf));
@@ -59,7 +59,7 @@ int vsprintf(char *str, const char *fmt, va_list ap) {
                     break;
                 }
                 case 'l': {
-                    u_long_int = va_arg(ap, unsigned long int);
+                    u_long_int = va_arg(ap, long long int);
                     if (u_long_int < 0) {
                         *str = '-';
                         str++;
