@@ -6,6 +6,8 @@
 #include <elf.h>
 #include "../../isa/riscv32/local-include/reg.h"
 
+// Csr index
+enum {MSTATUS = 0, MTVEC, MEPC, MCAUSE};
 //Get the symtab and strtab after analyse the elf in monitor.c
 #ifdef CONFIG_FTRACE
 extern char *strtab;
@@ -61,6 +63,40 @@ static inline def_rtl(setrelopi, uint32_t relop, rtlreg_t *dest,
   *dest = interpret_relop(relop, *src1, imm);
 }
 
+static inline def_rtl(csrrw, rtlreg_t* dest, const rtlreg_t* src1, const sword_t imm) {
+  sword_t idx = imm;
+  rtlreg_t t;
+  switch (idx) {
+    case 0x300: t = cpu.csr[MSTATUS]._32; cpu.csr[MSTATUS]._32 = *src1; *dest = t; return;
+    case 0x305: t = cpu.csr[MTVEC]._32; cpu.csr[MTVEC]._32 = *src1; *dest = t; return;
+    case 0x341: t = cpu.csr[MEPC]._32; cpu.csr[MEPC]._32 = *src1; *dest = t; return;
+    case 0x342: t = cpu.csr[MCAUSE]._32; cpu.csr[MCAUSE]._32 = *src1; *dest = t; return;
+  }
+}
+
+static inline def_rtl(csrrs, rtlreg_t* dest, const rtlreg_t* src1, const sword_t imm) {
+  sword_t idx = imm;
+  rtlreg_t t;
+  switch (idx) {
+    case 0x300: t = cpu.csr[MSTATUS]._32; cpu.csr[MSTATUS]._32 = (t) | (*src1); *dest = t; return;
+    case 0x305: t = cpu.csr[MTVEC]._32; cpu.csr[MTVEC]._32 = (t) | (*src1); *dest = t; return;
+    case 0x341: t = cpu.csr[MEPC]._32; cpu.csr[MEPC]._32 = (t) | (*src1); *dest = t; return;
+    case 0x342: t = cpu.csr[MCAUSE]._32; cpu.csr[MCAUSE]._32 = (t) | (*src1); *dest = t; return;
+  }
+}
+
+static inline def_rtl(ecall, rtlreg_t* dest, const rtlreg_t* src1, const sword_t imm) {
+  rtlreg_t mcause_no = gpr(17);
+  // printf("gpr17:%d\n", mcause_no);
+  s->dnpc = isa_raise_intr(mcause_no, s->pc);
+} 
+
+static inline def_rtl(mret, rtlreg_t* dest, const rtlreg_t* src1, const rtlreg_t* src2) {
+  s->dnpc = cpu.csr[MEPC]._32 + 4;
+  #ifdef CONFIG_ETRACE
+  printf(ASNI_FMT("mret address(epc + 4): 0x%08x\n", ASNI_FG_GREEN), s->dnpc);
+  #endif
+} 
 // mul/div
 
 def_rtl_compute_reg(mulu_lo)
