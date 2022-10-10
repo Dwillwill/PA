@@ -2,9 +2,9 @@
 
 static Context* do_event(Event e, Context* c) {
   switch (e.event) {
+    case EVENT_YIELD: Log("handled event ID = %d(EVENT_YIELD)", e.event); break;
     default: panic("Unhandled event ID = %d", e.event);
   }
-
   return c;
 }
 

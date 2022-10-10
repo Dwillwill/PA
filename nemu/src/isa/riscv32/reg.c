@@ -13,6 +13,10 @@ void isa_reg_display() {
   for( int i = 0; i < 32; i++ ){
     printf(ASNI_FMT("%s\t", ASNI_FG_GREEN)  ASNI_FMT("0x%08x\n", ASNI_FG_WHITE), regs[i], gpr(i));
   }
+  printf(ASNI_FMT("MSTATUS\t", ASNI_FG_GREEN)  ASNI_FMT("0x%08x\n", ASNI_FG_WHITE), cpu.csr[0]._32);
+  printf(ASNI_FMT("MTVEC\t", ASNI_FG_GREEN)  ASNI_FMT("0x%08x\n", ASNI_FG_WHITE), cpu.csr[1]._32);
+  printf(ASNI_FMT("MEPC\t", ASNI_FG_GREEN)  ASNI_FMT("0x%08x\n", ASNI_FG_WHITE), cpu.csr[2]._32);
+  printf(ASNI_FMT("MCAUSE\t", ASNI_FG_GREEN)  ASNI_FMT("0x%08x\n", ASNI_FG_WHITE), cpu.csr[3]._32);
 }
 
 word_t isa_reg_str2val(const char *s, bool success) {

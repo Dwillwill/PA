@@ -54,6 +54,19 @@ def_EHelper(slti){
   *ddest = interpret_relop(RELOP_LT, *dsrc1, id_src2->simm) ? 1 : 0;
 }
 
+def_EHelper(csrrw){
+  rtl_csrrw(s, ddest, dsrc1, id_src2->simm);
+}
+
+def_EHelper(csrrs){
+  rtl_csrrs(s, ddest, dsrc1, id_src2->simm);
+}
+
+def_EHelper(ecall){
+  rtl_ecall(s, ddest, dsrc1, id_src2->simm);
+}
+
+
 // R-Type
 def_EHelper(add){
   rtl_add(s, ddest, dsrc1, dsrc2);
@@ -121,6 +134,10 @@ def_EHelper(sltu){
 
 def_EHelper(slt){
   *ddest = interpret_relop(RELOP_LT, *dsrc1, *dsrc2) ? 1 : 0;
+}
+
+def_EHelper(mret) {
+  rtl_mret(s, ddest, dsrc1, dsrc2);
 }
 
 // B-Type

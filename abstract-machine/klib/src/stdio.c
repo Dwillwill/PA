@@ -6,7 +6,7 @@
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
 int printf(const char *fmt, ...) {
-    char buffer[128];
+    char buffer[4096];
     va_list ap;
     int ret = -1;
     va_start(ap, fmt);
@@ -21,24 +21,24 @@ int printf(const char *fmt, ...) {
     // panic("Not implemented");
 }
 
-void itoa(unsigned int n, char * buf){
+void itoa(unsigned long n, char * buf, int base){
     int i;
-    if(n < 10){
-        buf[0] = n + '0';
+    if(n < base){
+        buf[0] = "0123456789abcdef"[n % base];
         buf[1] = '\0';
         return;
     }
-    itoa(n / 10, buf);
+    itoa(n / base, buf, base);
     for(i = 0; buf[i] != '\0'; i++);
-    buf[i] = (n % 10) + '0';
+    buf[i] = "0123456789abcdef"[n % base];
     buf[i+1] = '\0';
 }
 
 int vsprintf(char *str, const char *fmt, va_list ap) {
     int n;
-    long long int u_long_int;
+    unsigned long long_int;
     char * s;
-    char buf[64];
+    char buf[4096];
     memset(buf, 0, sizeof (buf));
     while(*fmt != '\0') {
         if(*fmt == '%') {
@@ -52,21 +52,16 @@ int vsprintf(char *str, const char *fmt, va_list ap) {
                         n = -n;
                     }
                     // printf("case d n=[%d]\n", n);
-                    itoa(n, buf);
+                    itoa(n, buf, 10);
                     // printf("case d buf=[%s]\n", buf);
                     memcpy(str, buf, strlen(buf));
                     str += strlen(buf);
                     break;
                 }
                 case 'l': {
-                    u_long_int = va_arg(ap, long long int);
-                    if (u_long_int < 0) {
-                        *str = '-';
-                        str++;
-                        u_long_int = -u_long_int;
-                    }
+                    long_int = va_arg(ap, unsigned long);
                     // printf("case d n=[%d]\n", n);
-                    itoa(u_long_int, buf);
+                    itoa(long_int, buf, 10);
                     // printf("case d buf=[%s]\n", buf);
                     memcpy(str, buf, strlen(buf));
                     str += strlen(buf);
@@ -77,6 +72,18 @@ int vsprintf(char *str, const char *fmt, va_list ap) {
                     memcpy(str, s, strlen(s));
                     str += strlen(s);
                     break;
+                }
+                case 'x': {
+                    long_int = va_arg(ap, unsigned long);
+                    *(str++) = '0';
+                    *(str++) = 'x';
+                    // printf("case d n=[%d]\n", n);
+                    itoa(long_int, buf, 16);
+                    // printf("case d buf=[%s]\n", buf);
+                    memcpy(str, buf, strlen(buf));
+                    str += strlen(buf);
+                    break;
+
                 }
             }
         }else {
